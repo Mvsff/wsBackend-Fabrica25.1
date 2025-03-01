@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMDB Project</title>
+    <script>
+        async function fetchMovieData() {
+            const titulo = document.getElementById("movie-title").value;
+            if (titulo) {
+                try {
+                    const response = await fetch(`/api/filmes/fetch_from_omdb/?title=${titulo}`);
+    
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Dados recebidos da API:", data); 
+                        
+                        if (data.Response === "True") {
+                            document.getElementById("movie-info").innerHTML = `
+                                <h3>Informações do Filme</h3>
+                                <p><strong>Título:</strong> ${data.Title}</p>
+                                <p><strong>Ano:</strong> ${data.Year}</p>
+                                <p><strong>Gênero:</strong> ${data.Genre}</p>
+                                <p><strong>Diretor:</strong> ${data.Director}</p>
+                                <p><strong>Resumo:</strong> ${data.Plot}</p>
+                            `;
+                            
+                            
+                        } else {
+                            document.getElementById("movie-info").innerHTML = "<p>Filme não encontrado.</p>";
+                            document.getElementById("director-info").innerHTML = "";
+                        }
+                    } else {
+                        
+                        alert("Erro na requisição da API: " + response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Erro ao buscar dados:", error);
+                    alert("Erro ao buscar dados do filme.");
+                }
+            } else {
+                alert("Por favor, insira o título do filme.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Bem-vindo ao OMDB Project</h1>
+    <p>Gerencie filmes e diretores com Django e a API do OMDb.</p>
+
+    <h2>Pesquisar Filme</h2>
+    <input type="text" id="movie-title" placeholder="Digite o título do filme" />
+    <button onclick="fetchMovieData()">Buscar</button>
+
+    <div id="movie-info"></div>
+    <div id="director-info"></div>
+</body>
+</html>
